@@ -512,8 +512,15 @@
                         <div class="summary-row total-row"><span>الإجمالي:</span><span id="total">0.00 دينار</span>
                         </div>
                     </div>
-                    <div class="notes-section"> <label class="notes-label">ملاحظات خاصة على الطلب:</label> <textarea
-                            id="orderNotes" placeholder="مثال: بدون بصل، زيادة جبنة، درجة استواء متوسطة..."></textarea>
+                    <div class="notes-section">
+                        <label class="notes-label">اختر الطاولة (اختياري):</label>
+                        <select id="tableSelect"
+                            style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); margin-bottom:15px;">
+                            <option value="">بدون طاولة (توصيل / تيك أواي)</option>
+                        </select>
+
+                        <label class="notes-label">ملاحظات خاصة على الطلب:</label> <textarea id="orderNotes"
+                            placeholder="مثال: بدون بصل، زيادة جبنة، درجة استواء متوسطة..."></textarea>
                     </div>
                     <div class="action-buttons"> <button class="btn btn-clear" onclick="clearCart()"><i
                                 class="fas fa-trash"></i> تفريغ السلة</button> <button class="btn btn-confirm"
@@ -552,6 +559,7 @@
         // API Integration
         // ============================================
         const API_URL = "https://localhost:7182/api/Products";
+        const TABLES_API_URL = "https://localhost:7182/api/Tables";
         let menuData = []; // Will be populated from API
         let cart = [];
         let activeOrders = [];
@@ -599,8 +607,30 @@
             }
         }
 
+        // Fetch available tables
+        async function fetchTables() {
+            try {
+                const response = await fetch(TABLES_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch tables");
+
+                const tables = await response.json();
+                const tableSelect = document.getElementById('tableSelect');
+
+                // Add available (non-occupied) tables to dropdown
+                tables.filter(t => !t.isOccupied).forEach(table => {
+                    const option = document.createElement('option');
+                    option.value = table.id;
+                    option.textContent = `${table.name} (${table.capacity} أشخاص)`;
+                    tableSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error loading tables:", error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             fetchMenuItems(); // Load from API instead of static data
+            fetchTables(); // Load available tables
             updateCartDisplay();
         });
 
@@ -743,34 +773,106 @@
         // ============================================
         // تأكيد الطلب وإدارة الطلبات النشطة
         // ============================================
-        function placeOrder() {
+        async function placeOrder() {
             if (cart.length === 0) {
                 showAlert('الرجاء إضافة عناصر إلى السلة قبل تأكيد الطلب', 'warning');
                 return;
             }
 
             const notes = document.getElementById('orderNotes').value;
+            const selectedTableId = document.getElementById('tableSelect').value;
             const subtotal = cart.reduce((s, it) => s + it.price * it.quantity, 0);
             const tax = subtotal * 0.05;
             const total = subtotal + tax;
-            const orderId = Date.now().toString().slice(-6);
 
+            // Build order object matching backend model
             const newOrder = {
-                id: orderId,
-                items: JSON.parse(JSON.stringify(cart)),
-                notes, subtotal, tax, total,
-                time: getCurrentTime(),
-                status: 'new'
+                tableId: selectedTableId ? parseInt(selectedTableId) : null,
+                employeeId: null, // Optional: can be added later
+                status: "New",
+                totalAmount: subtotal,
+                totalTax: tax,
+                paymentMethod: null,
+                paidAmount: 0,
+                isPaid: false,
+                notes: notes || null,
+                items: cart.map(item => ({
+                    productId: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                }))
+            };
+
+            console.log("📤 Sending order to API:", newOrder);
+
+            try {
+                const response = await fetch('https://localhost:7182/api/Orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newOrder)
+                });
+
+                console.log("📡 Response status:", response.status);
+
+                if (response.ok) {
+                    const createdOrder = await response.json();
+                    console.log("✅ Order created:", createdOrder);
+
+                    // If a table was selected, mark it as occupied
+                    if (selectedTableId) {
+                        await updateTableStatus(selectedTableId, true);
+                    }
+
+                    // Add to local activeOrders for display
+                    activeOrders.unshift({
+                        id: createdOrder.id,
+                        items: cart.map(item => ({ ...item })),
+                        notes: notes,
+                        subtotal: subtotal,
+                        tax: tax,
+                        total: total,
+                        time: getCurrentTime(),
+                        status: 'new'
+                    });
+
+                    renderActiveOrders();
+                    cart = [];
+                    document.getElementById('orderNotes').value = '';
+                    document.getElementById('tableSelect').value = ''; // Reset table selection
+                    updateCartDisplay();
+                    fetchTables(); // Refresh table list
+
+                    showAlert(`تم تأكيد الطلب #${createdOrder.id} بنجاح! تم حفظه في قاعدة البيانات.`);
+                } else {
+                    const errorText = await response.text();
+                    console.error("❌ API Error:", errorText);
+                    showAlert('فشل حفظ الطلب. حاول مرة أخرى.', 'error');
+                }
+            } catch (error) {
+                console.error('❌ Error creating order:', error);
+                showAlert(`خطأ في الاتصال بالخادم: ${error.message}`, 'error');
             }
+        }
 
-                ;
-            activeOrders.unshift(newOrder);
-            renderActiveOrders();
-            cart = [];
-            document.getElementById('orderNotes').value = '';
-            updateCartDisplay();
+        // Update table status (occupied/available)
+        async function updateTableStatus(tableId, isOccupied) {
+            try {
+                const tableResponse = await fetch(`${TABLES_API_URL}/${tableId}`);
+                const table = await tableResponse.json();
 
-            showAlert(`تم تأكيد الطلب #${orderId} بنجاح ! سيبدأ التحضير الآن.`);
+                table.isOccupied = isOccupied;
+
+                await fetch(`${TABLES_API_URL}/${tableId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(table)
+                });
+
+                console.log(`✅ Table #${tableId} status updated to ${isOccupied ? 'occupied' : 'available'}`);
+            } catch (error) {
+                console.error('Error updating table status:', error);
+            }
         }
 
         function renderActiveOrders() {

@@ -293,21 +293,38 @@
 
         async function toggleTableStatus(id, currentStatus) {
             try {
+                // First, fetch the full table object
+                const getResponse = await fetch(`${API_URL}/${id}`);
+                if (!getResponse.ok) throw new Error("Failed to fetch table");
+
+                const table = await getResponse.json();
+
+                // Update the isOccupied status
+                table.isOccupied = !currentStatus;
+
+                // Send the complete table object back
                 const response = await fetch(`${API_URL}/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id, isOccupied: !currentStatus })
+                    body: JSON.stringify(table)
                 });
 
-                loadTables();
-                document.getElementById('table-details').innerHTML = `
-                    <h2>تفاصيل الطاولة</h2>
-                    <div style="text-align: center; color: var(--muted); margin-top: 50px;">
-                        <p>تم تحديث الحالة بنجاح</p>
-                    </div>
-                `;
+                if (response.ok) {
+                    console.log(`✅ Table #${id} status changed to ${table.isOccupied ? 'occupied' : 'available'}`);
+                    loadTables();
+                    document.getElementById('table-details').innerHTML = `
+                        <h2>تفاصيل الطاولة</h2>
+                        <div style="text-align: center; color: var(--success, #2ecc71); margin-top: 50px;">
+                            <i class="fas fa-check-circle fa-3x" style="margin-bottom:15px;"></i>
+                            <p>تم تحديث الحالة بنجاح</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error("Failed to update table");
+                }
             } catch (e) {
-                alert("حدث خطأ أثناء تحديث الحالة");
+                console.error("Error toggling table status:", e);
+                alert("حدث خطأ أثناء تحديث الحالة: " + e.message);
             }
         }
 

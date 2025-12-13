@@ -40,6 +40,25 @@ namespace RestoBackEnd.Services
                 order.OrderTime = DateTime.Now;
             }
 
+            // Deduct inventory quantities for each order item
+            foreach (var item in order.Items)
+            {
+                var product = await _context.Products.FindAsync(item.ProductId);
+                if (product == null)
+                {
+                    throw new InvalidOperationException($"Product with ID {item.ProductId} not found");
+                }
+
+                // Check if enough quantity is available
+                if (product.Quantity < item.Quantity)
+                {
+                    throw new InvalidOperationException($"Insufficient quantity for product '{product.Name}'. Available: {product.Quantity}, Requested: {item.Quantity}");
+                }
+
+                // Deduct the quantity
+                product.Quantity -= item.Quantity;
+            }
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
             return order;

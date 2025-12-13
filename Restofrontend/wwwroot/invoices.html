@@ -146,76 +146,224 @@
         </div>
     </nav>
 
-    <!-- ====== الهيدر ====== -->
-    <div class="header">
-        واجهة الفواتير
-        <span class="icon">🧾</span>
-    </div>
 
     <div class="main-layout">
-
-        <!-- ====== عناصر الفاتورة ====== -->
-        <div class="bill-wrapper">
+        <!-- Right: Invoice Details -->
+        <div class="bill-wrapper" style="flex: 2;">
             <h2>تفاصيل الفاتورة</h2>
+            <div id="invoice-details">
+                <div style="text-align: center; padding: 60px 20px; color: var(--muted);">
+                    <i class="fas fa-file-invoice fa-4x" style="margin-bottom: 20px; opacity: 0.3;"></i>
+                    <p>اختر فاتورة لعرض التفاصيل</p>
+                </div>
+            </div>
 
-            <div id="item-list"></div>
+            <!-- Payment Section (inside invoice details) -->
+            <div id="payment-section"
+                style="display: none; margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--border-color);">
+                <h3 style="color: var(--primary); margin-bottom: 15px;">💳 الدفع</h3>
 
-            <h2>المجموع: <span id="total">0</span> دينار</h2>
+                <label style="display: block; margin-bottom: 5px; font-weight: 600;">نوع الدفع:</label>
+                <select id="payment-method"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border-color); margin-bottom: 15px; background: var(--bg-color); color: var(--text-color); font-size: 16px;">
+                    <option value="cash">كاش</option>
+                    <option value="card">بطاقة</option>
+                </select>
+
+                <label style="display: block; margin-bottom: 5px; font-weight: 600;">المبلغ المدفوع:</label>
+                <input id="paid-amount" type="number" placeholder="ادخل المبلغ"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border-color); margin-bottom: 20px; background: var(--bg-color); color: var(--text-color); font-size: 16px; box-sizing: border-box;">
+
+                <button onclick="completePayment()"
+                    style="width: 100%; background: var(--success, #28a745); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 17px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                    ✅ إتمام الدفع والطباعة
+                </button>
+            </div>
         </div>
 
-        <!-- ====== الدفع ====== -->
-        <div class="payment-box">
-            <h3>الدفع</h3>
-
-            <label>نوع الدفع:</label>
-            <select id="payment-method">
-                <option value="cash">كاش</option>
-                <option value="card">بطاقة</option>
-            </select>
-
-            <label>المبلغ المدفوع:</label>
-            <input id="paid-amount" type="number" placeholder="ادخل المبلغ">
-
-            <button class="print-btn" onclick="printInvoice()">🖨 طباعة الفاتورة</button>
+        <!-- Left: Invoices List -->
+        <div class="bill-wrapper" style="flex: 1;">
+            <h2>📋 قائمة الفواتير</h2>
+            <div id="invoices-list"></div>
         </div>
 
     </div>
 
     <script>
-        // عناصر تجريبية للفاتورة
-        const items = [
-            { name: "برجر", price: 5 },
-            { name: "بطاطا", price: 2 },
-            { name: "بيبسي", price: 1.5 },
-            { name: "سلطة", price: 3 }
-        ];
+        const API_URL = "https://localhost:7182/api/Orders";
+        const TABLES_API_URL = "https://localhost:7182/api/Tables";
+        let orders = [];
+        let selectedInvoice = null;
 
-        const itemList = document.getElementById("item-list");
-        const totalEl = document.getElementById("total");
+        async function fetchOrders() {
+            console.log("🔄 Fetching orders from API...");
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error("Failed to fetch orders");
 
-        function renderItems() {
-            let total = 0;
-            itemList.innerHTML = "";
+                orders = await response.json();
+                console.log("📦 Orders received:", orders.length);
 
-            items.forEach(item => {
-                total += item.price;
-
-                itemList.innerHTML += `
-                    <div class="item-row">
-                        <span>${item.name}</span>
-                        <span>${item.price} د</span>
+                renderInvoicesLists();
+            } catch (error) {
+                console.error("❌ Error:", error);
+                document.getElementById("current-invoices-list").innerHTML = `
+                    <div style="text-align:center; padding:20px; color:red;">
+                        <p>خطأ في تحميل الفواتير</p>
                     </div>
                 `;
+            }
+        }
+
+        function renderInvoicesLists() {
+            const container = document.getElementById('invoices-list');
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:var(--muted);">
+                        <i class="fas fa-receipt fa-3x" style="margin-bottom:15px; opacity:0.3;"></i>
+                        <p>لا توجد فواتير</p>
+                        <p style="font-size:13px;">قم بإنشاء طلب من صفحة الطلبات</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort: unpaid first, then by date  
+            const sortedOrders = [...orders].sort((a, b) => {
+                if (a.isPaid !== b.isPaid) return a.isPaid ? 1 : -1;
+                return new Date(b.orderTime) - new Date(a.orderTime);
             });
 
-            totalEl.textContent = total;
+            container.innerHTML = sortedOrders.map(order => `
+                <div class="item-row" style="cursor: pointer; ${selectedInvoice?.id === order.id ? 'background: var(--primary); color: white;' : ''}" onclick="selectInvoice(${order.id})">
+                    <div>
+                        <strong>فاتورة #${order.id}</strong><br>
+                        <span style="display: inline-block; margin-top: 5px; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; ${order.isPaid ? 'background: #28a745; color: white;' : 'background: #ffc107; color: #333;'}">
+                            ${order.isPaid ? '✓ مدفوعة' : '⏳ غير مدفوعة'}
+                        </span>
+                    </div>
+                    <span><strong>${(order.totalAmount + order.totalTax).toFixed(2)} د</strong></span>
+                </div>
+            `).join('');
+
+            // Auto-select first unpaid invoice
+            if (!selectedInvoice) {
+                const firstUnpaid = sortedOrders.find(o => !o.isPaid);
+                if (firstUnpaid) selectInvoice(firstUnpaid.id);
+                else if (sortedOrders.length > 0) selectInvoice(sortedOrders[0].id);
+            }
         }
 
-        function printInvoice() {
-            alert("📄 تم إرسال الفاتورة للطباعة!");
+
+        function selectInvoice(invoiceId) {
+            selectedInvoice = orders.find(o => o.id === invoiceId);
+            if (!selectedInvoice) return;
+
+            const detailsContainer = document.getElementById('invoice-details');
+            detailsContainer.innerHTML = `
+                <div style="margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 8px;">
+                    <h3>فاتورة #${selectedInvoice.id}</h3>
+                    <p><strong>التاريخ:</strong> ${new Date(selectedInvoice.orderTime).toLocaleString('ar-EG')}</p>
+                    <p><strong>الحالة:</strong> <span style="color: ${selectedInvoice.isPaid ? 'var(--success)' : 'var(--warning)'}">
+                        ${selectedInvoice.isPaid ? 'مدفوعة ✓' : 'غير مدفوعة'}
+                    </span></p>
+                    ${selectedInvoice.notes ? `<p><strong>ملاحظات:</strong> ${selectedInvoice.notes}</p>` : ''}
+                </div>
+                ${selectedInvoice.items.map(item => `
+                    <div class="item-row">
+                        <span>${item.name} × ${item.quantity}</span>
+                        <span>${(item.price * item.quantity).toFixed(2)} د</span>
+                    </div>
+                `).join('')}
+                <div class="item-row" style="margin-top: 20px; background: #e3f2fd; font-weight: bold;">
+                    <span>المجموع الفرعي:</span>
+                    <span>${selectedInvoice.totalAmount.toFixed(2)} دينار</span>
+                </div>
+                <div class="item-row" style="background: #fff3cd; font-weight: bold;">
+                    <span>الضريبة (5%):</span>
+                    <span>${selectedInvoice.totalTax.toFixed(2)} دينار</span>
+                </div>
+                <div class="item-row" style="background: var(--primary); color: white; font-weight: bold; font-size: 18px;">
+                    <span>الإجمالي:</span>
+                    <span>${(selectedInvoice.totalAmount + selectedInvoice.totalTax).toFixed(2)} دينار</span>
+                </div>
+            `;
+
+            const paymentSection = document.getElementById('payment-section');
+            if (selectedInvoice.isPaid) {
+                paymentSection.style.display = 'none';
+            } else {
+                paymentSection.style.display = 'block';
+                document.getElementById('paid-amount').value = (selectedInvoice.totalAmount + selectedInvoice.totalTax).toFixed(2);
+            }
+
+            renderInvoicesLists();
         }
 
-        renderItems();
+        async function completePayment() {
+            if (!selectedInvoice || selectedInvoice.isPaid) {
+                alert("⚠️ لا توجد فاتورة نشطة");
+                return;
+            }
+
+            const paymentMethod = document.getElementById('payment-method').value;
+            const paidAmount = parseFloat(document.getElementById('paid-amount').value);
+            const totalAmount = selectedInvoice.totalAmount + selectedInvoice.totalTax;
+
+            if (!paidAmount || paidAmount < totalAmount) {
+                alert(`⚠️ المبلغ يجب أن يكون ${totalAmount.toFixed(2)} دينار على الأقل`);
+                return;
+            }
+
+            try {
+                selectedInvoice.isPaid = true;
+                selectedInvoice.paymentMethod = paymentMethod;
+                selectedInvoice.paidAmount = paidAmount;
+
+                const response = await fetch(`${API_URL}/${selectedInvoice.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(selectedInvoice)
+                });
+
+                if (response.ok) {
+                    if (selectedInvoice.tableId) {
+                        await freeTable(selectedInvoice.tableId);
+                    }
+
+                    const change = paidAmount - totalAmount;
+                    alert(`✅ تم الدفع!\n\nالمدفوع: ${paidAmount.toFixed(2)} د\nالباقي: ${change.toFixed(2)} د\n\n🖨️ جاري الطباعة...`);
+
+                    await fetchOrders();
+                    selectedInvoice = null;
+                } else {
+                    alert("❌ فشل تحديث الدفع");
+                }
+            } catch (error) {
+                alert("❌ خطأ: " + error.message);
+            }
+        }
+
+        async function freeTable(tableId) {
+            try {
+                const tableResponse = await fetch(`${TABLES_API_URL}/${tableId}`);
+                const table = await tableResponse.json();
+                table.isOccupied = false;
+
+                await fetch(`${TABLES_API_URL}/${tableId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(table)
+                });
+
+                console.log(`✅ Table #${tableId} freed`);
+            } catch (error) {
+                console.error('Error freeing table:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchOrders);
     </script>
 
     <script src="navbar.js"></script>
