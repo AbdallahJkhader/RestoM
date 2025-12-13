@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36717.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restofrontend", "Restofrontend\Restofrontend.csproj", "{98ED589D-08EB-410A-BBDE-632E44BD36D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestoBackEnd", "RestoBackEnd\RestoBackEnd.csproj", "{43D9B3DF-B4C0-4023-852C-2D3DE6DCCA1F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98ED589D-08EB-410A-BBDE-632E44BD36D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98ED589D-08EB-410A-BBDE-632E44BD36D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98ED589D-08EB-410A-BBDE-632E44BD36D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98ED589D-08EB-410A-BBDE-632E44BD36D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43D9B3DF-B4C0-4023-852C-2D3DE6DCCA1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43D9B3DF-B4C0-4023-852C-2D3DE6DCCA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43D9B3DF-B4C0-4023-852C-2D3DE6DCCA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43D9B3DF-B4C0-4023-852C-2D3DE6DCCA1F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4AAA4B79-EB26-4A8C-BF79-B74804A7B7FB}
+	EndGlobalSection
+EndGlobal

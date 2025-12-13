@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>واجهة الفواتير</title>
+
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Tajawal", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* ====== الهيدر ====== */
+        .header {
+            background: #006d8f;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .header .icon {
+            position: absolute;
+            left: 25px;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        /* ====== تقسيم الواجهة ====== */
+        .main-layout {
+            display: flex;
+            gap: 25px;
+            padding: 25px;
+        }
+
+        /* ==== صندوق عناصر الفاتورة ==== */
+        .bill-wrapper {
+            background: white;
+            width: 60%;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bill-wrapper h2 {
+            margin-top: 0;
+            color: #006d8f;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f1f1f1;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .item-row span {
+            font-size: 18px;
+        }
+
+        /* ==== قسم الدفع ==== */
+        .payment-box {
+            width: 40%;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .payment-box h3 {
+            margin-top: 0;
+            color: #006d8f;
+        }
+
+        .payment-box select,
+        .payment-box input {
+            width: 100%;
+            padding: 13px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 17px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            background: #009879;
+            color: white;
+        }
+
+        button.print-btn {
+            background: #006d8f;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <!-- Navigation Bar -->
+    <nav class="main-navbar">
+        <div class="main-navbar-container">
+            <a href="index.html" class="main-navbar-brand"><i class="fas fa-utensils"></i> RestoM</a>
+            <button class="main-navbar-toggle"><i class="fas fa-bars"></i></button>
+            <ul class="main-navbar-menu">
+                <li class="main-navbar-item"><a href="ordering.html" class="main-navbar-link"><i
+                            class="fas fa-shopping-cart"></i>
+                        الطلبات</a></li>
+                <li class="main-navbar-item"><a href="Tabels.html" class="main-navbar-link"><i class="fas fa-table"></i>
+                        الطاولات</a></li>
+                <li class="main-navbar-item"><a href="Inventory.html" class="main-navbar-link"><i
+                            class="fas fa-box"></i>
+                        المخزون</a></li>
+                <li class="main-navbar-item"><a href="invoices.html" class="main-navbar-link"><i
+                            class="fas fa-file-invoice"></i>
+                        الفواتير</a></li>
+                <li class="main-navbar-item"><a href="Reports.html" class="main-navbar-link"><i
+                            class="fas fa-chart-bar"></i>
+                        التقارير</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ====== الهيدر ====== -->
+    <div class="header">
+        واجهة الفواتير
+        <span class="icon">🧾</span>
+    </div>
+
+    <div class="main-layout">
+
+        <!-- ====== عناصر الفاتورة ====== -->
+        <div class="bill-wrapper">
+            <h2>تفاصيل الفاتورة</h2>
+
+            <div id="item-list"></div>
+
+            <h2>المجموع: <span id="total">0</span> دينار</h2>
+        </div>
+
+        <!-- ====== الدفع ====== -->
+        <div class="payment-box">
+            <h3>الدفع</h3>
+
+            <label>نوع الدفع:</label>
+            <select id="payment-method">
+                <option value="cash">كاش</option>
+                <option value="card">بطاقة</option>
+            </select>
+
+            <label>المبلغ المدفوع:</label>
+            <input id="paid-amount" type="number" placeholder="ادخل المبلغ">
+
+            <button class="print-btn" onclick="printInvoice()">🖨 طباعة الفاتورة</button>
+        </div>
+
+    </div>
+
+    <script>
+        // عناصر تجريبية للفاتورة
+        const items = [
+            { name: "برجر", price: 5 },
+            { name: "بطاطا", price: 2 },
+            { name: "بيبسي", price: 1.5 },
+            { name: "سلطة", price: 3 }
+        ];
+
+        const itemList = document.getElementById("item-list");
+        const totalEl = document.getElementById("total");
+
+        function renderItems() {
+            let total = 0;
+            itemList.innerHTML = "";
+
+            items.forEach(item => {
+                total += item.price;
+
+                itemList.innerHTML += `
+                    <div class="item-row">
+                        <span>${item.name}</span>
+                        <span>${item.price} د</span>
+                    </div>
+                `;
+            });
+
+            totalEl.textContent = total;
+        }
+
+        function printInvoice() {
+            alert("📄 تم إرسال الفاتورة للطباعة!");
+        }
+
+        renderItems();
+    </script>
+
+    <script src="navbar.js"></script>
+</body>
+
+</html>

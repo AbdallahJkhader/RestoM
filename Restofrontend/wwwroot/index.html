@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RestoM - نظام إدارة المطعم</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .hero {
+            text-align: center;
+            color: var(--text-color);
+            padding: 100px 20px 50px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .pages-grid {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .page-card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-card i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .page-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .pages-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="main-navbar">
+        <div class="main-navbar-container">
+            <a href="index.html" class="main-navbar-brand">
+                <i class="fas fa-utensils"></i>
+                RestoM
+            </a>
+            <button class="main-navbar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="main-navbar-menu">
+                <li class="main-navbar-item">
+                    <a href="ordering.html" class="main-navbar-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        الطلبات
+                    </a>
+                </li>
+                <li class="main-navbar-item">
+                    <a href="Tabels.html" class="main-navbar-link">
+                        <i class="fas fa-table"></i>
+                        الطاولات
+                    </a>
+                </li>
+                <li class="main-navbar-item">
+                    <a href="Inventory.html" class="main-navbar-link">
+                        <i class="fas fa-box"></i>
+                        المخزون
+                    </a>
+                </li>
+                <li class="main-navbar-item">
+                    <a href="invoices.html" class="main-navbar-link">
+                        <i class="fas fa-file-invoice"></i>
+                        الفواتير
+                    </a>
+                </li>
+                <li class="main-navbar-item">
+                    <a href="Reports.html" class="main-navbar-link">
+                        <i class="fas fa-chart-bar"></i>
+                        التقارير
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1><i class="fas fa-utensils"></i> مرحباً بك في RestoM</h1>
+        <p>نظام إدارة المطاعم الشامل</p>
+    </div>
+
+    <div class="pages-grid">
+        <a href="ordering.html" class="page-card">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>نظام الطلبات</h3>
+            <p>إنشاء وإدارة طلبات العملاء</p>
+        </a>
+
+        <a href="Tabels.html" class="page-card">
+            <i class="fas fa-table"></i>
+            <h3>إدارة الطاولات</h3>
+            <p>متابعة حالة الطاولات (متاح/مشغول)</p>
+        </a>
+
+        <a href="Inventory.html" class="page-card">
+            <i class="fas fa-box"></i>
+            <h3>المخزون</h3>
+            <p>إدارة المنتجات والكميات</p>
+        </a>
+
+        <a href="invoices.html" class="page-card">
+            <i class="fas fa-file-invoice"></i>
+            <h3>الفواتير</h3>
+            <p>إصدار وطباعة الفواتير</p>
+        </a>
+
+        <a href="Reports.html" class="page-card">
+            <i class="fas fa-chart-bar"></i>
+            <h3>التقارير</h3>
+            <p>إحصائيات ومبيعات وأداء الموظفين</p>
+        </a>
+    </div>
+
+    <script src="navbar.js"></script>
+</body>
+
+</html>

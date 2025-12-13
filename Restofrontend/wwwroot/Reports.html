@@ -1,0 +1,635 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>التقارير - إدارة المطعم</title>
+
+    <!-- خط Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --header: #006d8f;
+            --accent: #009879;
+            --danger: #d9534f;
+            --card-bg: #ffffff;
+            --page-bg: #f5f6fa;
+            --muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Tajawal", sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+        }
+
+        /* HEADER */
+        .header {
+            background: var(--header);
+            color: #fff;
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header .icon {
+            position: absolute;
+            left: 22px;
+            font-size: 24px;
+        }
+
+        /* MAIN LAYOUT */
+        .wrap {
+            padding: 22px;
+            max-width: 1200px;
+            margin: 18px auto;
+        }
+
+        /* Top summary cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h4 {
+            margin: 0 0 8px 0;
+            color: var(--header);
+            font-size: 16px;
+        }
+
+        .card .value {
+            font-size: 26px;
+            font-weight: 800;
+            color: #111;
+        }
+
+        /* layout main content */
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        /* Left column */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .panel h3 {
+            margin: 0 0 12px 0;
+            color: var(--header);
+        }
+
+        /* monthly sales chart */
+        .chart-wrap {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            background: #fafafa;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 640px;
+            height: 220px;
+            box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.02);
+        }
+
+        /* items list (most sold) with progress bars */
+        .most-sold-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ms-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ms-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            min-width: 160px;
+        }
+
+        .ms-name {
+            font-weight: 700;
+        }
+
+        .progress {
+            flex: 1;
+            background: #eee;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress>.bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #0fa070);
+            width: 0%;
+            border-radius: 10px;
+        }
+
+        .ms-value {
+            min-width: 48px;
+            text-align: left;
+            color: var(--muted)
+        }
+
+        /* right column panels */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* employees table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px
+        }
+
+        th {
+            background: var(--header);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* small helpers */
+        .muted {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .btn.blue {
+            background: var(--header);
+            color: #fff
+        }
+
+        .btn.ghost {
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .kpi {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: flex-start
+        }
+
+        .kpi .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%
+        }
+
+        .kpi .dot.green {
+            background: var(--accent)
+        }
+
+        .kpi .dot.red {
+            background: var(--danger)
+        }
+
+        /* responsive */
+        @media (max-width:980px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="main-navbar">
+        <div class="main-navbar-container">
+            <a href="index.html" class="main-navbar-brand"><i class="fas fa-utensils"></i> RestoM</a>
+            <button class="main-navbar-toggle"><i class="fas fa-bars"></i></button>
+            <ul class="main-navbar-menu">
+                <li class="main-navbar-item"><a href="ordering.html" class="main-navbar-link"><i
+                            class="fas fa-shopping-cart"></i>
+                        الطلبات</a></li>
+                <li class="main-navbar-item"><a href="Tabels.html" class="main-navbar-link"><i class="fas fa-table"></i>
+                        الطاولات</a></li>
+                <li class="main-navbar-item"><a href="Inventory.html" class="main-navbar-link"><i
+                            class="fas fa-box"></i>
+                        المخزون</a></li>
+                <li class="main-navbar-item"><a href="invoices.html" class="main-navbar-link"><i
+                            class="fas fa-file-invoice"></i>
+                        الفواتير</a></li>
+                <li class="main-navbar-item"><a href="Reports.html" class="main-navbar-link"><i
+                            class="fas fa-chart-bar"></i>
+                        التقارير</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="header">
+        تقارير المبيعات والأداء
+        <span class="icon">📊</span>
+    </div>
+
+    <div class="wrap">
+
+        <!-- top KPI cards -->
+        <div class="cards">
+            <div class="card">
+                <h4>مبيعات اليوم</h4>
+                <div class="value" id="kpi-daily">0 د</div>
+                <div class="muted">عدد الطلبات: <strong id="kpi-daily-orders">0</strong></div>
+            </div>
+
+            <div class="card">
+                <h4>مبيعات الشهر</h4>
+                <div class="value" id="kpi-monthly">0 د</div>
+                <div class="muted">متوسط يومي: <strong id="kpi-monthly-avg">0 د</strong></div>
+            </div>
+
+            <div class="card">
+                <h4>أكثر منتج مبيعاً</h4>
+                <div class="value" id="kpi-top-item">-</div>
+                <div class="muted">الكمية المباعة: <strong id="kpi-top-qty">0</strong></div>
+            </div>
+        </div>
+
+        <div class="main">
+            <!-- LEFT -->
+            <div class="left-col">
+
+                <!-- Monthly sales chart -->
+                <div class="panel">
+                    <h3>مخطط المبيعات الشهرية</h3>
+                    <canvas id="monthlyChart"></canvas>
+                    <div class="muted" style="margin-top:10px">المحور السيني: أيام الشهر — المحور الصادي: المبيعات
+                        (دینار)</div>
+                </div>
+
+                <!-- Most sold items -->
+                <div class="panel">
+                    <h3>المنتجات الأكثر مبيعاً</h3>
+                    <div class="most-sold-list" id="mostSoldList">
+                        <!-- يتم ملؤها بواسطة JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="right-col">
+
+                <!-- Daily Sales list (latest sales) -->
+                <div class="panel">
+                    <h3>المبيعات اليوم (آخر العمليات)</h3>
+                    <div id="recentSales">
+                        <!-- ملء ديناميكي -->
+                    </div>
+                </div>
+
+                <!-- Employee performance -->
+                <div class="panel">
+                    <h3>أداء الموظفين</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الموظف</th>
+                                <th>عدد الطلبات</th>
+                                <th>المبيعات (د)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeesTbody">
+                            <!-- JS -->
+                        </tbody>
+                    </table>
+                    <div class="actions">
+                        <button class="btn blue" onclick="downloadCSV()">⬇ تحميل CSV</button>
+                        <button class="btn primary" onclick="refreshData()">🔄 تحديث البيانات</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ---------------------------
+            بيانات تجريبية (سهل التعديل)
+           --------------------------- */
+        const DATA = {
+            dailySales: {
+                total: 128.5,
+                orders: [
+                    { id: 101, table: 5, amount: 12.5, time: "09:12" },
+                    { id: 102, table: 2, amount: 25.0, time: "10:05" },
+                    { id: 103, table: 7, amount: 8.0, time: "11:20" },
+                    { id: 104, table: 3, amount: 20.0, time: "12:45" },
+                    { id: 105, table: 1, amount: 63.0, time: "13:30" }
+                ]
+            },
+            monthlySales: {
+                // days 1..30 (مثال)
+                days: Array.from({ length: 30 }, (_, i) => ({
+                    day: i + 1,
+                    sales: Math.round(Math.max(0, (Math.sin(i / 4) * 30 + 40) + Math.random() * 20))
+                }))
+            },
+            items: [
+                { name: "برجر", qty: 120 },
+                { name: "بطاطا", qty: 85 },
+                { name: "بيبسي", qty: 70 },
+                { name: "سلطة", qty: 45 },
+                { name: "عصير برتقال", qty: 30 }
+            ],
+            employees: [
+                { name: "أحمد", orders: 32, sales: 620 },
+                { name: "سارة", orders: 28, sales: 540 },
+                { name: "خالد", orders: 20, sales: 380 },
+                { name: "ليلى", orders: 16, sales: 220 }
+            ]
+        };
+
+        /* ---------------------------
+            تهيئة العناصر بالصفحة
+           --------------------------- */
+        function initKPIs() {
+            document.getElementById("kpi-daily").textContent = DATA.dailySales.total + " د";
+            document.getElementById("kpi-daily-orders").textContent = DATA.dailySales.orders.length;
+
+            const monthlyTotal = DATA.monthlySales.days.reduce((s, d) => s + d.sales, 0);
+            document.getElementById("kpi-monthly").textContent = monthlyTotal + " د";
+            document.getElementById("kpi-monthly-avg").textContent = Math.round(monthlyTotal / DATA.monthlySales.days.length) + " د";
+
+            const top = DATA.items.slice().sort((a, b) => b.qty - a.qty)[0];
+            document.getElementById("kpi-top-item").textContent = top.name;
+            document.getElementById("kpi-top-qty").textContent = top.qty;
+        }
+
+        /* ---------------------------
+            Recent Sales (قائمة العمليات اليوم)
+           --------------------------- */
+        function renderRecentSales() {
+            const box = document.getElementById("recentSales");
+            box.innerHTML = "";
+            DATA.dailySales.orders.slice().reverse().forEach(o => {
+                const el = document.createElement("div");
+                el.style.padding = "8px 6px";
+                el.style.borderBottom = "1px solid #f0f0f0";
+                el.innerHTML = `<strong>#${o.id}</strong> | طاولة ${o.table} — <span style="color:var(--muted)">${o.time}</span>
+                            <div style="float:left;font-weight:800">${o.amount} د</div>`;
+                box.appendChild(el);
+            });
+        }
+
+        /* ---------------------------
+            Employees table
+           --------------------------- */
+        function renderEmployees() {
+            const tbody = document.getElementById("employeesTbody");
+            tbody.innerHTML = "";
+            DATA.employees.forEach(emp => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${emp.name}</td><td>${emp.orders}</td><td>${emp.sales} د</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ---------------------------
+            Most sold (progress bars)
+           --------------------------- */
+        function renderMostSold() {
+            const wrap = document.getElementById("mostSoldList");
+            wrap.innerHTML = "";
+            const max = Math.max(...DATA.items.map(i => i.qty), 1);
+            DATA.items.forEach(it => {
+                const row = document.createElement("div");
+                row.className = "ms-row";
+                row.innerHTML = `
+                <div class="ms-info"><div class="ms-name">${it.name}</div></div>
+                <div class="progress" aria-hidden><div class="bar" style="width:${Math.round((it.qty / max) * 100)}%"></div></div>
+                <div class="ms-value">${it.qty} pcs</div>
+            `;
+                wrap.appendChild(row);
+            });
+        }
+
+        /* ---------------------------
+            Monthly sales chart (Canvas simple bar chart)
+           --------------------------- */
+        function drawMonthlyChart() {
+            const canvas = document.getElementById("monthlyChart");
+            // set real pixel size for sharpness
+            const ratio = window.devicePixelRatio || 1;
+            const w = canvas.clientWidth;
+            const h = canvas.clientHeight;
+            canvas.width = w * ratio;
+            canvas.height = h * ratio;
+            const ctx = canvas.getContext("2d");
+            ctx.scale(ratio, ratio);
+
+            // background
+            ctx.clearRect(0, 0, w, h);
+
+            const padding = { top: 16, right: 12, bottom: 28, left: 28 };
+            const areaW = w - padding.left - padding.right;
+            const areaH = h - padding.top - padding.bottom;
+
+            const days = DATA.monthlySales.days;
+            const maxVal = Math.max(...days.map(d => d.sales), 1);
+            const barW = areaW / days.length * 0.7;
+            const gap = areaW / days.length * 0.3;
+
+            // y grid lines
+            ctx.strokeStyle = "#eee";
+            ctx.lineWidth = 1;
+            const gridCount = 4;
+            ctx.font = "12px Tajawal";
+            ctx.fillStyle = "#666";
+            for (let i = 0; i <= gridCount; i++) {
+                const y = padding.top + areaH * (i / gridCount);
+                ctx.beginPath();
+                ctx.moveTo(padding.left, y);
+                ctx.lineTo(w - padding.right, y);
+                ctx.stroke();
+            }
+
+            // bars
+            days.forEach((d, idx) => {
+                const x = padding.left + idx * (barW + gap);
+                const hBar = (d.sales / maxVal) * (areaH - 6);
+                const y = padding.top + (areaH - hBar);
+
+                // gradient bar
+                const g = ctx.createLinearGradient(x, y, x, y + hBar);
+                g.addColorStop(0, "rgba(0,150,120,0.95)");
+                g.addColorStop(1, "rgba(0,120,100,0.9)");
+
+                ctx.fillStyle = g;
+                const bw = barW;
+                // draw rounded rect
+                roundRect(ctx, x, y, bw, hBar, 6, true, false);
+
+                // day label
+                ctx.fillStyle = "#444";
+                ctx.textAlign = "center";
+                ctx.fillText(d.day, x + bw / 2, h + -6);
+            });
+
+            // helper: draw outline for axes
+            ctx.strokeStyle = "#ddd";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding.left, padding.top);
+            ctx.lineTo(padding.left, padding.top + areaH);
+            ctx.lineTo(w - padding.right, padding.top + areaH);
+            ctx.stroke();
+
+            // helper function rounded rect
+            function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+                if (typeof stroke === 'undefined') stroke = true;
+                if (typeof radius === 'undefined') radius = 5;
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.arcTo(x + width, y, x + width, y + height, radius);
+                ctx.arcTo(x + width, y + height, x, y + height, radius);
+                ctx.arcTo(x, y + height, x, y, radius);
+                ctx.arcTo(x, y, x + width, y, radius);
+                ctx.closePath();
+                if (fill) ctx.fill();
+                if (stroke) ctx.stroke();
+            }
+        }
+
+        /* ---------------------------
+            Actions
+           --------------------------- */
+        function refreshData() {
+            // هنا يمكن استبدال المنطق لطلب بيانات من السيرفر
+            // حالياً: نولّد تغييرات عشوائية خفيفة ليتجدد الرسم والقيم
+            DATA.dailySales.total = Math.round((100 + Math.random() * 200) * 10) / 10;
+            DATA.dailySales.orders.push({ id: Math.floor(Math.random() * 999) + 200, table: Math.ceil(Math.random() * 10), amount: Math.round(Math.random() * 60 * 10) / 10, time: "15:2" + Math.floor(Math.random() * 9) });
+            DATA.items.forEach(it => {
+                it.qty = Math.max(2, it.qty + Math.round((Math.random() - 0.4) * 8));
+            });
+            DATA.monthlySales.days.forEach(d => d.sales = Math.round(Math.max(0, (Math.sin(d.day / 4) * 30 + 40) + Math.random() * 30)));
+            // rerender
+            renderAll();
+        }
+
+        function downloadCSV() {
+            // employees to csv
+            const rows = [["الموظف", "عدد الطلبات", "المبيعات"]];
+            DATA.employees.forEach(e => rows.push([e.name, e.orders, e.sales]));
+            const csv = rows.map(r => r.join(",")).join("\n");
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "employees_report.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        /* ---------------------------
+            Main render function
+           --------------------------- */
+        function renderAll() {
+            initKPIs();
+            renderRecentSales();
+            renderEmployees();
+            renderMostSold();
+            drawMonthlyChart();
+        }
+
+        /* initial render */
+        renderAll();
+
+        /* redraw chart on resize for responsiveness */
+        let resizeTimer;
+        window.addEventListener("resize", () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(drawMonthlyChart, 200);
+        });
+    </script>
+
+    <script src="navbar.js"></script>
+</body>
+
+</html>

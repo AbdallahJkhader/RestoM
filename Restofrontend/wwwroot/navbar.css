@@ -1,0 +1,119 @@
+/* ====== Shared Navigation Bar Styles ====== */
+:root {
+    --primary: #006d8f;
+    --primary-dark: #004d66;
+    --accent: #009879;
+    --light: #f5f6fa;
+}
+
+.main-navbar {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.main-navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px;
+}
+
+.main-navbar-brand {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 18px 0;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+    /* Space between brand and toggle/menu */
+}
+
+.main-navbar-brand:hover {
+    color: #fff;
+}
+
+.main-navbar-menu {
+    display: flex;
+    gap: 5px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-right: auto;
+    /* Push menu to the left in RTL */
+}
+
+.main-navbar-item {
+    position: relative;
+}
+
+.main-navbar-link {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    padding: 20px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+.main-navbar-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.main-navbar-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-bottom-color: var(--accent);
+    color: white;
+}
+
+/* Mobile Menu Toggle */
+.main-navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-navbar-toggle {
+        display: block;
+    }
+
+    .main-navbar-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        flex-direction: column;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s;
+    }
+
+    .main-navbar-menu.active {
+        max-height: 400px;
+    }
+
+    .main-navbar-link {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}

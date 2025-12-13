@@ -1,0 +1,106 @@
+:root {
+    /* Light Theme (Default) */
+    --bg-color: #f5f6fa;
+    --text-color: #333333;
+    --card-bg: #ffffff;
+    --header-bg: #006d8f;
+    --header-text: #ffffff;
+    --primary: #009879;
+    --secondary: #2E86AB;
+    --accent: #A23B72;
+    --border-color: #dddddd;
+    --hover-bg: #f1f1f1;
+    --input-bg: #ffffff;
+    --input-text: #333333;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    /* Dark Theme */
+    --bg-color: #1a1a2e;
+    --text-color: #e0e0e0;
+    --card-bg: #16213e;
+    --header-bg: #0f3460;
+    --header-text: #e0e0e0;
+    --primary: #009879;
+    /* Keep brand color or adjust slightly */
+    --secondary: #4CC9F0;
+    --accent: #E94560;
+    --border-color: #2a2a40;
+    --hover-bg: #252542;
+    --input-bg: #1f1f35;
+    --input-text: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.card,
+.page-card,
+.bill-wrapper,
+.payment-box,
+.details-box,
+.tables-wrapper,
+.section-card,
+.panel {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.header,
+.header,
+.main-navbar {
+    background: var(--header-bg) !important;
+    color: var(--header-text) !important;
+}
+
+input,
+select,
+textarea {
+    background-color: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Navbar Links */
+.main-navbar-link {
+    color: var(--header-text) !important;
+}
+
+.main-navbar-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Icons in cards */
+.page-card i {
+    /* Gradient text fix for dark mode if needed, or keep as is */
+}
+
+/* Table styles */
+table th {
+    background-color: var(--header-bg) !important;
+    color: var(--header-text) !important;
+}
+
+table td {
+    border-bottom-color: var(--border-color) !important;
+}
+
+/* Specific overrides */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-color);
+}
+
+.item-row {
+    background-color: var(--hover-bg) !important;
+}
