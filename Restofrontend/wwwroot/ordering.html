@@ -499,7 +499,7 @@
                 <div class="section-card">
                     <h3 class="section-title"><i class="fas fa-shopping-cart"></i> سلة الطلبات</h3>
                     <div class="cart-items" id="cartItems">
-                        <!-- هنا نضع عنصر لعرض العناصر بينما يبقى #emptyCart ثابتاً -->
+                        <!-- Cart items display element while #emptyCart remains static -->
                         <div id="cartList"></div>
                         <div id="emptyCart"> <i class="fas fa-shopping-basket"></i>
                             <h5>سلة الطلبات فارغة</h5>
@@ -553,9 +553,7 @@
             </div>
         </div>
     </div>
-    <script> // ============================================
-
-        // ============================================
+    <script>
         // API Integration
         // ============================================
         const API_URL = "https://localhost:7182/api/Products";
@@ -635,10 +633,10 @@
         });
 
         // ============================================
-        // عرض القائمة (تمرير العنصر النشط كـ el)
+        // Display menu (pass active element as el)
         // ============================================
         function filterMenu(category, el) {
-            // تحديث التبويبات النشطة
+            // Update active tabs
             document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('active'));
             if (el) el.classList.add('active');
             renderMenuItems(category);
@@ -659,7 +657,7 @@
         }
 
         // ============================================
-        // إدارة السلة (الآن نكتب إلى #cartList ونترك #emptyCart ثابت)
+        // Cart management (now writes to #cartList and leaves #emptyCart static)
         // ============================================
         function addToCart(itemId) {
             const item = menuData.find(i => i.id === itemId);
@@ -771,7 +769,7 @@
         }
 
         // ============================================
-        // تأكيد الطلب وإدارة الطلبات النشطة
+        // Order confirmation and active orders management
         // ============================================
         async function placeOrder() {
             if (cart.length === 0) {

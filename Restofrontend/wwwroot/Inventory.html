@@ -22,7 +22,7 @@
             color: var(--text-color);
         }
 
-        /* ====== المحتوى ====== */
+        /* ====== Content ====== */
         .container {
             padding: 25px;
             display: flex;
@@ -31,7 +31,7 @@
             margin: 0 auto;
         }
 
-        /* ==== جدول المخزون ==== */
+        /* ==== Inventory Table ==== */
         .inventory-box {
             flex: 65%;
             background: var(--card-bg);
@@ -91,7 +91,7 @@
             background: #2980b9;
         }
 
-        /* ==== إضافة منتج ==== */
+        /* ==== Add Product ==== */
         .add-box {
             flex: 35%;
             background: var(--card-bg);
@@ -189,10 +189,10 @@
         </div>
     </nav>
 
-    <!-- ====== المحتوى الرئيسي ====== -->
+    <!-- Main Content -->
     <div class="container">
 
-        <!-- جدول المخزون -->
+        <!-- Inventory Table -->
         <div class="inventory-box">
             <h2>📦 قائمة المخزون</h2>
             <table>
@@ -206,12 +206,12 @@
                     </tr>
                 </thead>
                 <tbody id="inventory-table">
-                    <!-- سيتم ملؤها بواسطة JS -->
+                    <!-- Populated by JavaScript -->
                 </tbody>
             </table>
         </div>
 
-        <!-- صندوق الإضافة والتعديل -->
+        <!-- Add/Edit Box -->
         <div class="add-box">
             <h3>➕ إضافة منتج</h3>
             <input id="product-name" type="text" placeholder="اسم المنتج">
