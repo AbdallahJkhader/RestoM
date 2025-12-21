@@ -9,16 +9,6 @@
     <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: var(--secondary);
-            --secondary: var(--accent);
-            --success: #18A999;
-            --warning: #F18F01;
-            --danger: #C73E1D;
-            --light: var(--bg-color);
-            --dark: var(--text-color);
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
@@ -77,22 +67,45 @@
 
         .section-card {
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 15px var(--shadow-color);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 20px var(--shadow-color);
             border: 1px solid var(--border-color);
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px var(--shadow-color);
         }
 
         .section-title {
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 2px solid var(--border-color);
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: bold;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .section-title i {
+            color: var(--secondary);
+            font-size: 24px;
         }
 
         .menu-tabs {
@@ -103,26 +116,49 @@
         }
 
         .menu-tab {
-            padding: 10px 20px;
-            border-radius: 25px;
+            padding: 12px 24px;
+            border-radius: 30px;
             background: var(--hover-bg);
             color: var(--text-color);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             border: 2px solid transparent;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-tab::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .menu-tab:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .menu-tab:hover {
             background: var(--primary);
             color: white;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .menu-tab.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .menu-items-container {
@@ -137,48 +173,87 @@
         .menu-item {
             background: var(--bg-color);
             border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            transition: all 0.3s;
+            border-radius: 16px;
+            padding: 18px;
+            transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover::after {
+            transform: scaleX(1);
         }
 
         .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px var(--shadow-color);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px var(--shadow-color);
             border-color: var(--primary);
+            background: var(--hover-bg);
         }
 
         .item-name {
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 700;
+            font-size: 17px;
             color: var(--text-color);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .item-price {
             color: var(--success, #18A999);
-            font-weight: bold;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 16px;
         }
 
         .add-btn {
             width: 100%;
-            padding: 10px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            margin-top: 10px;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            margin-top: 12px;
+            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .add-btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .add-btn:hover {
-            filter: brightness(1.1);
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0, 108, 143, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 108, 143, 0.4);
         }
 
         .cart-container {
@@ -206,19 +281,38 @@
 
         .cart-item {
             background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 12px;
+            border: 2px solid var(--border-color);
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cart-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 12px 0 0 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cart-item:hover::before {
+            opacity: 1;
         }
 
         .cart-item:hover {
             border-color: var(--primary);
-            box-shadow: 0 2px 8px var(--shadow-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transform: translateX(-5px);
         }
 
         .cart-item:last-child {
@@ -236,8 +330,8 @@
         }
 
         .item-price-small {
-            color: #666;
-            font-size: 14px;
+            color: var(--success);
+            font-size: 12px;
         }
 
         .item-controls {
@@ -360,14 +454,34 @@
         }
 
         .btn-confirm {
-            background: var(--success);
+            background: linear-gradient(135deg, var(--success), #16a085);
             color: white;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-confirm::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .btn-confirm:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-confirm:hover {
-            background: #148f7c;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(24, 169, 153, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(24, 169, 153, 0.4);
         }
 
         .orders-container {
@@ -381,11 +495,12 @@
         }
 
         .order-card {
-            background: #f8f9fa;
+            background: var(--hover-bg);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 15px;
             border-left: 4px solid var(--warning);
+            color: var(--text-color);
         }
 
         .order-card.new {
@@ -393,7 +508,7 @@
         }
 
         .order-card.completed {
-            border-left-color: #28a745;
+            border-left-color: var(--success);
         }
 
         .order-header {
@@ -405,12 +520,13 @@
 
         .order-id {
             font-weight: 700;
-            color: var(--dark);
+            color: var(--text-color);
             font-size: 18px;
         }
 
         .order-time {
-            color: #666;
+            color: var(--text-color);
+            opacity: 0.7;
             font-size: 14px;
         }
 
@@ -485,10 +601,13 @@
                         الطاولات</a></li>
                 <li class="main-navbar-item"><a href="Inventory.html" class="main-navbar-link"><i
                             class="fas fa-box"></i> المخزون</a></li>
+                <li class="main-navbar-item"><a href="kitchen.html" class="main-navbar-link"><i
+                            class="fas fa-utensils"></i> المطبخ</a></li>
                 <li class="main-navbar-item"><a href="invoices.html" class="main-navbar-link"><i
                             class="fas fa-file-invoice"></i> الفواتير</a></li>
                 <li class="main-navbar-item"><a href="Reports.html" class="main-navbar-link"><i
                             class="fas fa-chart-bar"></i> التقارير</a></li>
+
             </ul>
         </div>
     </nav>
@@ -541,12 +660,12 @@
                     <div class="menu-items-container" id="menuItems"></div>
                 </div>
                 <div class="section-card orders-container">
-                    <h3 class="section-title"><i class="fas fa-clipboard-list"></i> الطلبات النشطة</h3>
-                    <div class="orders-list" id="activeOrders">
+                    <h3 class="section-title"><i class="fas fa-history"></i> الطلبات السابقة</h3>
+                    <div class="orders-list" id="previousOrders">
                         <div style="text-align:center; padding:40px 20px; color:#999;">
-                            <i class="fas fa-clipboard fa-3x" style="margin-bottom:15px; color:#ddd;"></i>
-                            <h5>لا توجد طلبات نشطة</h5>
-                            <p>سيظهر الطلبات هنا بعد تأكيدها</p>
+                            <i class="fas fa-history fa-3x" style="margin-bottom:15px; color:#ddd;"></i>
+                            <h5>لا توجد طلبات سابقة</h5>
+                            <p>ستظهر أحدث 5 طلبات هنا</p>
                         </div>
                     </div>
                 </div>
@@ -558,9 +677,11 @@
         // ============================================
         const API_URL = "https://localhost:7182/api/Products";
         const TABLES_API_URL = "https://localhost:7182/api/Tables";
+        const ORDERS_API_URL = "https://localhost:7182/api/Orders";
         let menuData = []; // Will be populated from API
         let cart = [];
         let activeOrders = [];
+        let previousOrders = []; // Will be loaded from API
 
         // Fetch menu items from API
         async function fetchMenuItems() {
@@ -580,7 +701,7 @@
                     id: p.id,
                     name: p.name,
                     price: p.price,
-                    category: 'main', // You can add category field to Product model later
+                    category: p.category || 'main',
                     description: `${p.quantity} متوفر في المخزون`
                 }));
 
@@ -626,9 +747,38 @@
             }
         }
 
+        // Fetch previous orders from API
+        async function fetchPreviousOrders() {
+            try {
+                const response = await fetch(ORDERS_API_URL);
+                if (!response.ok) return;
+                const allOrders = await response.json();
+
+                // Get last 5 orders, sorted by ID descending
+                previousOrders = allOrders
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 5)
+                    .map(order => ({
+                        id: order.id,
+                        items: order.items || [],
+                        notes: order.notes,
+                        subtotal: order.totalAmount,
+                        tax: order.totalTax,
+                        total: order.totalAmount + order.totalTax,
+                        time: new Date(order.orderTime).toLocaleTimeString('ar-EG'),
+                        status: order.status.toLowerCase()
+                    }));
+
+                renderPreviousOrders();
+            } catch (error) {
+                console.error("Error fetching previous orders:", error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             fetchMenuItems(); // Load from API instead of static data
             fetchTables(); // Load available tables
+            fetchPreviousOrders(); // Load previous orders from API
             updateCartDisplay();
         });
 
@@ -822,8 +972,8 @@
                         await updateTableStatus(selectedTableId, true);
                     }
 
-                    // Add to local activeOrders for display
-                    activeOrders.unshift({
+                    // Add to local previousOrders for display
+                    previousOrders.unshift({
                         id: createdOrder.id,
                         items: cart.map(item => ({ ...item })),
                         notes: notes,
@@ -834,7 +984,10 @@
                         status: 'new'
                     });
 
-                    renderActiveOrders();
+                    // Save to localStorage
+                    localStorage.setItem('previousOrders', JSON.stringify(previousOrders));
+
+                    renderPreviousOrders();
                     cart = [];
                     document.getElementById('orderNotes').value = '';
                     document.getElementById('tableSelect').value = ''; // Reset table selection
@@ -873,15 +1026,16 @@
             }
         }
 
-        function renderActiveOrders() {
-            const ordersContainer = document.getElementById('activeOrders');
+        function renderPreviousOrders() {
+            const ordersContainer = document.getElementById('previousOrders');
 
-            if (activeOrders.length === 0) {
-                ordersContainer.innerHTML = `<div style="text-align:center; padding:40px 20px; color:#999;"><i class="fas fa-clipboard fa-3x" style="margin-bottom:15px; color:#ddd;"></i><h5>لا توجد طلبات نشطة</h5><p>سيظهر الطلبات هنا بعد تأكيدها</p></div>`;
+            if (previousOrders.length === 0) {
+                ordersContainer.innerHTML = `<div style="text-align:center; padding:40px 20px; color:#999;"><i class="fas fa-history fa-3x" style="margin-bottom:15px; color:#ddd;"></i><h5>لا توجد طلبات سابقة</h5><p>ستظهر أحدث 5 طلبات هنا</p></div>`;
                 return;
             }
 
-            ordersContainer.innerHTML = activeOrders.map(order => `
+            // Show only last 5 (first 5 in the array since we use unshift)
+            ordersContainer.innerHTML = previousOrders.slice(0, 5).map(order => `
                 <div class="order-card ${order.status}">
                     <div class="order-header">
                         <div class="order-id">الطلب #${order.id}</div>
@@ -905,15 +1059,6 @@
                     ` : ''}
                     <div style="text-align:right; font-weight:700; margin-top:10px; border-top:1px solid var(--border-color); padding-top:10px;">
                         الإجمالي: ${order.total.toFixed(2)} دينار
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:15px;">
-                        ${order.status === 'new' ?
-                    `<button style="background:var(--warning); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:13px;" onclick="updateOrderStatus('${order.id}', 'preparing')">بدء التحضير</button>`
-                    : ''}
-                        ${order.status === 'preparing' ?
-                    `<button style="background:#28a745; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:13px;" onclick="updateOrderStatus('${order.id}', 'completed')">اكتمل التحضير</button>`
-                    : ''}
-                        <button style="background:#6c757d; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:13px;" onclick="removeOrder('${order.id}')">حذف</button>
                     </div>
                 </div>
             `).join('');

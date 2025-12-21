@@ -25,6 +25,7 @@ builder.Services.AddScoped<RestoBackEnd.Services.IProductService, RestoBackEnd.S
 builder.Services.AddScoped<RestoBackEnd.Services.ITableService, RestoBackEnd.Services.TableService>();
 builder.Services.AddScoped<RestoBackEnd.Services.IOrderService, RestoBackEnd.Services.OrderService>();
 builder.Services.AddScoped<RestoBackEnd.Services.IReportService, RestoBackEnd.Services.ReportService>();
+builder.Services.AddScoped<RestoBackEnd.Services.IKitchenOrderService, RestoBackEnd.Services.KitchenOrderService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>المطبخ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a5276 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .logo-text h2 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .main-content {
+            display: block;
+            padding: 20px;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .section-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .menu-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .menu-tab {
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: var(--hover-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            font-weight: 500;
+        }
+
+        .menu-tab:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .menu-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .menu-items-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .menu-item {
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow-color);
+            border-color: var(--primary);
+        }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            color: var(--success, #18A999);
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .add-btn:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 108, 143, 0.3);
+        }
+
+        .cart-container {
+            position: sticky;
+            top: 20px;
+        }
+
+        #emptyCart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        #emptyCart i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .cart-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .cart-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-details h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .item-price-small {
+            color: var(--success);
+            font-size: 12px;
+        }
+
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .qty-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .qty-value {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            color: var(--danger);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            transition: all .3s;
+        }
+
+        .remove-btn:hover {
+            background: rgba(199, 62, 29, 0.1);
+        }
+
+        .notes-section {
+            margin-top: 20px;
+        }
+
+        .notes-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        #orderNotes {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .order-summary {
+            background: var(--hover-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .summary-row span {
+            color: var(--text-color);
+        }
+
+        .total-row {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-color);
+            padding-top: 10px;
+            border-top: 2px solid var(--border-color);
+            margin-top: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .btn-clear {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .btn-clear:hover {
+            background: #e9ecef;
+        }
+
+        .btn-confirm {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: var(--success);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(24, 169, 153, 0.3);
+        }
+
+        .orders-container {
+            margin-top: 25px;
+        }
+
+        .orders-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .order-card {
+            background: var(--hover-bg);
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid var(--warning);
+            color: var(--text-color);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            min-height: 300px;
+        }
+
+        .order-card.new {
+            border-left-color: var(--primary);
+        }
+
+        .order-card.completed {
+            border-left-color: var(--success);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .order-id {
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 18px;
+        }
+
+        .order-time {
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        .order-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .status-new {
+            background: rgba(46, 134, 171, 0.1);
+            color: var(--primary);
+        }
+
+        .status-preparing {
+            background: rgba(241, 143, 1, 0.1);
+            color: var(--warning);
+        }
+
+        .status-completed {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .order-item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn .5s;
+        }
+
+        .alert-success {
+            background: rgba(24, 169, 153, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="main-navbar">
+        <div class="main-navbar-container">
+            <a href="index.html" class="main-navbar-brand"><i class="fas fa-utensils"></i> RestoM</a>
+            <button class="main-navbar-toggle"><i class="fas fa-bars"></i></button>
+            <ul class="main-navbar-menu">
+                <li class="main-navbar-item"><a href="ordering.html" class="main-navbar-link"><i
+                            class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li class="main-navbar-item"><a href="Tabels.html" class="main-navbar-link"><i class="fas fa-table"></i>
+                        الطاولات</a></li>
+                <li class="main-navbar-item"><a href="Inventory.html" class="main-navbar-link"><i
+                            class="fas fa-box"></i> المخزون</a></li>
+                <li class="main-navbar-item"><a href="kitchen.html" class="main-navbar-link"><i
+                            class="fas fa-utensils"></i> المطبخ</a></li>
+                <li class="main-navbar-item"><a href="invoices.html" class="main-navbar-link"><i
+                            class="fas fa-file-invoice"></i> الفواتير</a></li>
+                <li class="main-navbar-item"><a href="Reports.html" class="main-navbar-link"><i
+                            class="fas fa-chart-bar"></i> التقارير</a></li>
+
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="main-content">
+            <!-- Cart on the left (first in grid) -->
+            <div class="main-content">
+                <div class="section-card" style="width: 100%;">
+                    <h3 class="section-title"><i class="fas fa-clipboard-list"></i> الطلبات النشطة (المطبخ)</h3>
+                    <div id="activeOrders" class="orders-grid">
+                        <div style="text-align:center; padding:40px 20px; color:var(--muted); grid-column: 1/-1;">
+                            <i class="fas fa-clipboard fa-3x" style="margin-bottom:15px; opacity:0.5;"></i>
+                            <h5>جاري تحميل الطلبات...</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        // API Integration
+        // ============================================
+        const API_URL = "https://localhost:7182/api/Products";
+        const ORDERS_API_URL = "https://localhost:7182/api/Orders";
+        let activeOrders = [];
+        const KITCHEN_API_URL = "https://localhost:7182/api/KitchenOrders";
+        let kitchenOrdersMap = {}; // Map of orderId -> kitchenOrder data
+
+
+
+        function getStatusText(status) {
+            const statuses = { 'new': 'جديد', 'preparing': 'قيد التحضير', 'completed': 'مكتمل' };
+            return statuses[status.toLowerCase()] || status;
+        }
+
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertBox = document.createElement('div');
+            alertBox.className = `alert alert-${type}`;
+            alertBox.style.display = 'block';
+            alertBox.style.position = 'fixed';
+            alertBox.style.top = '20px';
+            alertBox.style.left = '50%';
+            alertBox.style.transform = 'translateX(-50%)';
+            alertBox.style.zIndex = '1000';
+            alertBox.textContent = message;
+            document.body.appendChild(alertBox);
+            setTimeout(() => alertBox.remove(), 3000);
+        }
+
+        // Fetch Active Orders and Kitchen Data from API
+        async function fetchActiveOrders() {
+            try {
+                const response = await fetch(ORDERS_API_URL);
+                if (!response.ok) throw new Error("Failed to fetch orders");
+                const allOrders = await response.json();
+
+                // Filter only active orders (New or Preparing)
+                activeOrders = allOrders.filter(o => o.status.toLowerCase() !== 'completed' && o.status.toLowerCase() !== 'cancelled');
+
+                // Fetch kitchen data
+                await fetchKitchenOrders();
+
+                renderActiveOrders();
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+            }
+        }
+
+        // Fetch Kitchen Orders from API
+        async function fetchKitchenOrders() {
+            try {
+                const response = await fetch(KITCHEN_API_URL);
+                if (!response.ok) return;
+                const kitchenOrders = await response.json();
+
+                // Map by OrderId for quick lookup
+                kitchenOrdersMap = {};
+                kitchenOrders.forEach(ko => {
+                    kitchenOrdersMap[ko.orderId] = ko;
+                });
+            } catch (error) {
+                console.error("Error fetching kitchen orders:", error);
+            }
+        }
+
+        function renderActiveOrders() {
+            const ordersContainer = document.getElementById('activeOrders');
+
+            if (activeOrders.length === 0) {
+                ordersContainer.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--muted); grid-column: 1/-1;"><i class="fas fa-clipboard fa-3x" style="margin-bottom:15px; opacity:0.5;"></i><h5>لا توجد طلبات نشطة</h5><p>قائمة الطلبات الجديدة ستظهر هنا</p></div>`;
+                return;
+            }
+
+            ordersContainer.innerHTML = activeOrders.map(order => {
+                const kitchenData = kitchenOrdersMap[order.id] || {};
+                const duration = parseInt(kitchenData.preparationDuration) || 10;
+                const startTime = kitchenData.preparationStartTime ? new Date(kitchenData.preparationStartTime).getTime() : null;
+                const chefName = kitchenData.chefName;
+
+                // Calculate time remaining if preparing
+                let timeDisplay = `<span class="badge bg-secondary">⏲️ ${duration} دقيقة</span>`;
+
+                if (order.status.toLowerCase() === 'preparing' && startTime) {
+                    const elapsedMin = Math.floor((Date.now() - startTime) / 60000);
+                    const remaining = duration - elapsedMin;
+                    const color = remaining < 0 ? 'red' : (remaining < 3 ? 'orange' : 'green');
+                    timeDisplay = `<span id="timer-display-${order.id}" style="color:${color}; font-weight:bold;">⏲️ متبقى: ${remaining} دقيقة</span>`;
+                }
+
+                return `
+                <div class="order-card ${order.status.toLowerCase()}">
+                    <div class="order-header">
+                        <span class="order-id">طلب #${order.id}</span>
+                        <span class="order-time">${new Date(order.orderTime).toLocaleTimeString('ar-EG')}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <div class="order-status status-${order.status.toLowerCase()}">${getStatusText(order.status)}</div>
+                        ${timeDisplay}
+                    </div>
+                    ${chefName ? `<div style="background:rgba(0,0,0,0.05); padding:5px 10px; border-radius:5px; margin-bottom:10px; font-size:13px;">👨‍🍳 الشيف: <strong>${chefName}</strong></div>` : ''}
+                    
+                    <div class="order-items">
+                        ${order.items.map(item => `
+                            <div class="order-item-row">
+                                <span>${item.name} x ${item.quantity}</span>
+                                <span>${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>`).join('')}
+                    </div>
+                    ${order.notes ? `<p style="font-size:13px; opacity:0.8; margin-top:10px; font-style:italic;">📝 ملاحظات: ${order.notes}</p>` : ''}
+                    
+                    <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+                        ${order.status.toLowerCase() === 'new' ?
+                        `<div style="display:flex; gap:5px; width:100%;">
+                            <input type="text" id="chef-${order.id}" placeholder="اسم الشيف" style="flex:2; padding:8px; border-radius:5px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--input-text);">
+                            <input type="number" id="duration-${order.id}" value="10" placeholder="دقيقة" style="flex:1; padding:8px; border-radius:5px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--input-text);" title="وقت التحضير (دقيقة)">
+                            <button style="background:var(--warning); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;" onclick="assignAndStart(${order.id})">بدء</button>
+                         </div>`
+                        : ''}
+                        ${order.status.toLowerCase() === 'preparing' ?
+                        `<button style="background:#28a745; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; flex:1;" onclick="updateOrderStatus('${order.id}', 'Completed')">✅ اكتمال</button>`
+                        : ''}
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        async function assignAndStart(orderId) {
+            const chefNameInput = document.getElementById(`chef-${orderId}`);
+            const durationInput = document.getElementById(`duration-${orderId}`);
+
+            const chefName = chefNameInput ? chefNameInput.value.trim() : '';
+            const duration = durationInput ? parseInt(durationInput.value) : 10;
+
+            if (!chefName) {
+                alert('الرجاء إدخال اسم الشيف للبدء');
+                return;
+            }
+
+            // Create KitchenOrder record via API
+            const kitchenOrderData = {
+                orderId: orderId,
+                chefName: chefName,
+                preparationStartTime: new Date().toISOString(),
+                preparationDuration: duration
+            };
+
+            try {
+                const response = await fetch(KITCHEN_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(kitchenOrderData)
+                });
+
+                if (response.ok) {
+                    // Update order status
+                    await updateOrderStatus(orderId, 'Preparing');
+                } else {
+                    alert('فشل حفظ بيانات المطبخ');
+                }
+            } catch (error) {
+                console.error("Error creating kitchen order:", error);
+                alert('خطأ في الاتصال بالخادم');
+            }
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const order = activeOrders.find(o => o.id == orderId);
+                if (!order) return;
+
+                order.status = newStatus;
+
+                // PUT to API
+                const response = await fetch(`${ORDERS_API_URL}/${orderId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(order)
+                });
+
+                if (response.ok) {
+                    fetchActiveOrders(); // Refresh
+                    showAlert(`تم تحديث حالة الطلب #${orderId}`);
+                } else {
+                    alert('فشل تحديث الحالة');
+                }
+            } catch (error) {
+                console.error("Error updating status:", error);
+            }
+        }
+
+        // Remove placeOrder from auto-run or keep it but primarily fetch
+        // Refresh every 30 seconds
+        setInterval(fetchActiveOrders, 30000);
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchActiveOrders(); // Fetch orders on load
+            setInterval(updateOrderTimers, 1000); // Live timer update
+        });
+
+        // Live Timer Update Function
+        function updateOrderTimers() {
+            activeOrders.forEach(order => {
+                if (order.status.toLowerCase() === 'preparing') {
+                    const kitchenData = kitchenOrdersMap[order.id] || {};
+                    const duration = parseInt(kitchenData.preparationDuration) || 10;
+                    const startTime = kitchenData.preparationStartTime ? new Date(kitchenData.preparationStartTime).getTime() : null;
+
+                    if (startTime) {
+                        const elapsedMin = Math.floor((Date.now() - startTime) / 60000);
+                        const remaining = duration - elapsedMin;
+                        const timerEl = document.getElementById(`timer-display-${order.id}`);
+
+                        if (timerEl) {
+                            const color = remaining < 0 ? 'red' : (remaining < 3 ? 'orange' : 'green');
+                            timerEl.parentElement.innerHTML = `<span id="timer-display-${order.id}" style="color:${color}; font-weight:bold;">⏲️ متبقى: ${remaining} دقيقة</span>`;
+                        }
+                    }
+                }
+            });
+        }
+
+
+
+    </script>
+    <script src="navbar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

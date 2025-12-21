@@ -74,21 +74,21 @@
         }
 
         .delete-btn {
-            background: #e74c3c;
+            background: var(--danger);
             color: white;
         }
 
         .update-btn {
-            background: #3498db;
+            background: var(--primary);
             color: white;
         }
 
         .delete-btn:hover {
-            background: #c0392b;
+            background: var(--danger);
         }
 
         .update-btn:hover {
-            background: #2980b9;
+            background: var(--primary);
         }
 
         /* ==== Add Product ==== */
@@ -174,6 +174,12 @@
                     </a>
                 </li>
                 <li class="main-navbar-item">
+                    <a href="kitchen.html" class="main-navbar-link">
+                        <i class="fas fa-utensils"></i>
+                        المطبخ
+                    </a>
+                </li>
+                <li class="main-navbar-item">
                     <a href="invoices.html" class="main-navbar-link">
                         <i class="fas fa-file-invoice"></i>
                         الفواتير
@@ -185,6 +191,7 @@
                         التقارير
                     </a>
                 </li>
+
             </ul>
         </div>
     </nav>
@@ -199,6 +206,7 @@
                 <thead>
                     <tr>
                         <th>اسم المنتج</th>
+                        <th>الفئة</th>
                         <th>السعر (د)</th>
                         <th>الكمية</th>
                         <th>تعديل</th>
@@ -215,6 +223,12 @@
         <div class="add-box">
             <h3>➕ إضافة منتج</h3>
             <input id="product-name" type="text" placeholder="اسم المنتج">
+            <select id="product-category"
+                style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--input-bg); color: var(--input-text);">
+                <option value="main">وجبات رئيسية</option>
+                <option value="appetizers">مقبلات</option>
+                <option value="drinks">مشروبات</option>
+            </select>
             <input id="product-price" type="number" placeholder="السعر (دينار)">
             <input id="product-qty" type="number" placeholder="الكمية">
             <button onclick="addProduct()">✅ إضافة</button>
@@ -224,6 +238,12 @@
             <h3>🔄 تحديث كمية</h3>
             <input id="update-id" type="text" placeholder="ID" disabled>
             <input id="update-name" type="text" placeholder="اسم المنتج" disabled>
+            <select id="update-category"
+                style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--input-bg); color: var(--input-text);">
+                <option value="main">وجبات رئيسية</option>
+                <option value="appetizers">مقبلات</option>
+                <option value="drinks">مشروبات</option>
+            </select>
             <input id="update-qty" type="number" placeholder="الكمية الجديدة">
             <button class="update-btn" onclick="updateProduct()">🔄 تحديث الكمية</button>
         </div>
@@ -262,6 +282,7 @@
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${item.name}</td>
+                    <td>${getCategoryName(item.category)}</td>
                     <td>${item.price.toFixed(2)}</td>
                     <td>${item.quantity}</td>
                     <td><button class="update-btn" onclick="prepareUpdate(${item.id})">تعديل</button></td>
@@ -271,8 +292,14 @@
             });
         }
 
+        function getCategoryName(cat) {
+            const map = { 'main': 'وجبات رئيسية', 'appetizers': 'مقبلات', 'drinks': 'مشروبات' };
+            return map[cat] || cat || 'غير محدد';
+        }
+
         async function addProduct() {
             const name = document.getElementById("product-name").value;
+            const category = document.getElementById("product-category").value;
             const price = Number(document.getElementById("product-price").value);
             const quantity = Number(document.getElementById("product-qty").value);
 
@@ -293,7 +320,7 @@
                 return;
             }
 
-            const newProduct = { name, price, quantity };
+            const newProduct = { name, price, quantity, category };
             console.log("Sending to API:", newProduct);
 
             try {
@@ -346,12 +373,14 @@
 
             document.getElementById("update-id").value = item.id;
             document.getElementById("update-name").value = item.name;
+            document.getElementById("update-category").value = item.category || 'main'; // Default to main if empty
             document.getElementById("update-qty").value = item.quantity;
         }
 
         async function updateProduct() {
             const id = document.getElementById("update-id").value;
             const newQty = Number(document.getElementById("update-qty").value);
+            const newCategory = document.getElementById("update-category").value;
 
             if (!id) return alert("❗ اختر منتجاً للتعديل");
             if (newQty < 0) return alert("❗ الكمية غير صالحة");
@@ -359,7 +388,7 @@
             const item = inventory.find(i => i.id == id);
             if (!item) return;
 
-            const updatedProduct = { ...item, quantity: newQty };
+            const updatedProduct = { ...item, quantity: newQty, category: newCategory };
 
             try {
                 const response = await fetch(`${API_URL}/${id}`, {

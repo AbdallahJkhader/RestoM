@@ -15,6 +15,7 @@ namespace RestoBackEnd.Data
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
         public DbSet<Employee> Employees { get; set; } = null!;
+        public DbSet<KitchenOrder> KitchenOrders { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

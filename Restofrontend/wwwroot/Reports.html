@@ -171,10 +171,13 @@
                         الطاولات</a></li>
                 <li class="main-navbar-item"><a href="Inventory.html" class="main-navbar-link"><i
                             class="fas fa-box"></i> المخزون</a></li>
+                <li class="main-navbar-item"><a href="kitchen.html" class="main-navbar-link"><i
+                            class="fas fa-utensils"></i> المطبخ</a></li>
                 <li class="main-navbar-item"><a href="invoices.html" class="main-navbar-link"><i
                             class="fas fa-file-invoice"></i> الفواتير</a></li>
                 <li class="main-navbar-item"><a href="Reports.html" class="main-navbar-link"><i
                             class="fas fa-chart-bar"></i> التقارير</a></li>
+
             </ul>
         </div>
     </nav>
@@ -186,6 +189,16 @@
         </div>
 
         <div id="reports" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h1 style="margin: 0; color: var(--primary);"><i class="fas fa-chart-bar"></i> التقارير والإحصائيات</h1>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span id="last-update" style="font-size: 13px; color: var(--muted);"></span>
+                    <button onclick="loadAllData()"
+                        style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-sync-alt" id="refresh-icon"></i> تحديث البيانات
+                    </button>
+                </div>
+            </div>
             <!-- Financial Summary -->
             <div class="stats-grid">
                 <div class="stat-card" style="border-right: 4px solid #28a745;">
@@ -222,7 +235,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
                 <!-- Top Products -->
                 <div class="section">
-                    <h2><i class="fas fa-trophy"></i> أكثر المنتجات مبيعاً</h2>
+                    <h2><i class="fas fa-trophy"></i> أكثر المنتجات طلباً</h2>
                     <div id="top-products"></div>
                 </div>
 
@@ -307,11 +320,26 @@
         }
 
         function calculateAndDisplayReports() {
+            console.log('📊 Calculating reports...', { ordersCount: orders.length });
+
             // Financial calculations
-            const paidOrders = orders.filter(o => o.isPaid);
-            const totalSales = paidOrders.reduce((sum, o) => sum + o.totalAmount, 0);
-            const totalTax = paidOrders.reduce((sum, o) => sum + o.totalTax, 0);
+            const paidOrders = orders.filter(o => o.isPaid || o.IsPaid);
+            console.log('💰 Paid orders:', paidOrders.length);
+
+            // Handle both camelCase (from some APIs) and PascalCase (from .NET)
+            const totalSales = paidOrders.reduce((sum, o) => {
+                const amount = o.totalAmount || o.TotalAmount || 0;
+                return sum + amount;
+            }, 0);
+
+            const totalTax = paidOrders.reduce((sum, o) => {
+                const tax = o.totalTax || o.TotalTax || 0;
+                return sum + tax;
+            }, 0);
+
             const avgOrder = paidOrders.length > 0 ? totalSales / paidOrders.length : 0;
+
+            console.log('📈 Totals:', { totalSales, totalTax, avgOrder });
 
             document.getElementById('total-sales').textContent = totalSales.toFixed(2) + ' د';
             document.getElementById('total-orders').textContent = orders.length;
@@ -344,7 +372,7 @@
                         <thead>
                             <tr>
                                 <th>المنتج</th>
-                                <th>الكمية المباعة</th>
+                                <th>عدد مرات الطلب</th>
                                 <th>الإيرادات</th>
                             </tr>
                         </thead>
@@ -405,7 +433,16 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadAllData);
+        document.addEventListener('DOMContentLoaded', function () {
+            loadAllData();
+            // Auto-refresh every 10 seconds
+            setInterval(() => {
+                loadAllData();
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('ar-EG');
+                document.getElementById('last-update').textContent = `آخر تحديث: ${timeStr}`;
+            }, 10000);
+        });
     </script>
 
     <script src="navbar.js"></script>
