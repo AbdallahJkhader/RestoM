@@ -33,7 +33,7 @@ To run this project locally, follow these steps:
 5.  Start the API and open the frontend files (e.g., `index.html`) in your browser.
 
 ## 📬 Contact Me
-* **LinkedIn:** [Abdallah Khader](https://www.linkedin.com/in/abdallah-j-khader-b70739230)
+* **LinkedIn:** [Abdallah J. Khader](https://www.linkedin.com/in/abdallah-j-khader-b70739230)
 * **Portfolio:** [abdallahjkhader-portfolio.netlify.app](https://abdallahjkhader-portfolio.netlify.app)
 * **Email:** abdallahjkhader@gmail.com
 
